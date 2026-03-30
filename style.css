@@ -22,35 +22,13 @@ body {
   padding: 20px;
   background-color: #040817;
   background-image:
-    radial-gradient(circle at 8%  12%, rgba(255,255,255,0.90) 1px, transparent 1px),
-    radial-gradient(circle at 24% 5%,  rgba(255,255,255,0.70) 1px, transparent 1px),
-    radial-gradient(circle at 47% 18%, rgba(255,255,255,0.85) 1px, transparent 1px),
-    radial-gradient(circle at 63% 8%,  rgba(255,255,255,0.65) 1px, transparent 1px),
-    radial-gradient(circle at 79% 22%, rgba(255,255,255,0.80) 1px, transparent 1px),
-    radial-gradient(circle at 91% 14%, rgba(255,255,255,0.60) 1px, transparent 1px),
-    radial-gradient(circle at 36% 42%, rgba(255,255,255,0.75) 1px, transparent 1px),
-    radial-gradient(circle at 55% 35%, rgba(255,255,255,0.55) 1px, transparent 1px),
-    radial-gradient(circle at 72% 50%, rgba(255,255,255,0.80) 1px, transparent 1px),
-    radial-gradient(circle at 15% 58%, rgba(255,255,255,0.65) 1px, transparent 1px),
-    radial-gradient(circle at 88% 62%, rgba(255,255,255,0.70) 1px, transparent 1px),
-    radial-gradient(circle at 42% 75%, rgba(255,255,255,0.60) 1px, transparent 1px),
-    radial-gradient(circle at 67% 80%, rgba(255,255,255,0.85) 1px, transparent 1px),
-    radial-gradient(circle at 20% 88%, rgba(255,255,255,0.55) 1px, transparent 1px),
-    radial-gradient(circle at 93% 90%, rgba(255,255,255,0.70) 1px, transparent 1px),
-    radial-gradient(circle at 5%  45%, rgba(255,255,255,0.60) 1px, transparent 1px),
-    radial-gradient(circle at 50% 95%, rgba(255,255,255,0.65) 1px, transparent 1px),
-    radial-gradient(circle at 31% 28%, rgba(200,220,255,0.50) 2px, transparent 2px),
-    radial-gradient(circle at 76% 68%, rgba(200,220,255,0.45) 2px, transparent 2px),
-    radial-gradient(circle at 13% 82%, rgba(200,220,255,0.40) 2px, transparent 2px),
-    linear-gradient(145deg, #030814 0%, #071b3f 40%, #0b3d91 100%);
-  background-size:
-    180px 180px, 220px 220px, 200px 200px, 260px 260px, 190px 190px,
-    210px 210px, 170px 170px, 240px 240px, 200px 200px, 230px 230px,
-    185px 185px, 215px 215px, 195px 195px, 250px 250px, 205px 205px,
-    175px 175px, 225px 225px,
-    350px 350px, 320px 320px, 380px 380px,
-    cover;
+    linear-gradient(rgba(3, 8, 24, 0.08), rgba(3, 8, 24, 0.08)),
+    url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
+  min-height: 100vh;
 }
 
 .container {
