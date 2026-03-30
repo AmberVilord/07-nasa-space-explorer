@@ -202,8 +202,8 @@ button:hover {
   max-width: 850px;
 }
 
-/* Stylish "New Fact" button inside the Did You Know panel */
-.new-fact-btn {
+/* Shared pill button style for the search/load actions and the fact button */
+.action-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -221,14 +221,14 @@ button:hover {
   transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.new-fact-btn:hover {
+.action-btn:hover {
   color: #ffffff;
   background: rgba(100, 180, 255, 0.1);
   border-color: rgba(157, 208, 255, 0.7);
   box-shadow: 0 0 12px rgba(100, 180, 255, 0.35);
 }
 
-.new-fact-btn:active {
+.action-btn:active {
   transform: scale(0.97);
 }
 
