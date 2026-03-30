@@ -7,6 +7,7 @@ const mediaButton = document.getElementById('media-btn');
 const gallery = document.getElementById('gallery');
 const spaceFactText = document.getElementById('space-fact-text');
 const DEFAULT_MEDIA_QUERY = 'mars';
+const MEDIA_CACHE_PREFIX = 'nasa-media-cache:';
 
 // Modal elements
 const modal = document.getElementById('modal');
@@ -14,6 +15,66 @@ const modalImg = document.getElementById('modal-img');
 const modalTitle = document.getElementById('modal-title');
 const modalDate = document.getElementById('modal-date');
 const modalClose = document.getElementById('modal-close');
+const themeToggleButton = document.getElementById('theme-toggle');
+const menuToggleButton = document.getElementById('menu-toggle');
+const nasaMenu = document.getElementById('nasa-menu');
+const THEME_STORAGE_KEY = 'space-explorer-theme';
+
+// Apply a visual theme and update the toggle label so users always know the next mode.
+function applyTheme(theme) {
+  const isLightMode = theme === 'light';
+
+  document.body.classList.toggle('light-mode', isLightMode);
+
+  if (themeToggleButton) {
+    themeToggleButton.innerHTML = isLightMode ? 'Dark<br>Mode' : 'Light<br>Mode';
+  }
+
+  localStorage.setItem(THEME_STORAGE_KEY, isLightMode ? 'light' : 'dark');
+}
+
+// Start from saved mode. If nothing is saved, default to dark mode.
+const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+applyTheme(savedTheme);
+
+if (themeToggleButton) {
+  themeToggleButton.addEventListener('click', () => {
+    const currentIsLight = document.body.classList.contains('light-mode');
+    applyTheme(currentIsLight ? 'dark' : 'light');
+  });
+}
+
+function closeNasaMenu() {
+  if (!nasaMenu || !menuToggleButton) {
+    return;
+  }
+
+  nasaMenu.classList.remove('menu-open');
+  menuToggleButton.setAttribute('aria-expanded', 'false');
+}
+
+if (menuToggleButton && nasaMenu) {
+  menuToggleButton.addEventListener('click', () => {
+    const isOpen = nasaMenu.classList.toggle('menu-open');
+    menuToggleButton.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!nasaMenu.contains(event.target) && !menuToggleButton.contains(event.target)) {
+      closeNasaMenu();
+    }
+  });
+
+  nasaMenu.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeNasaMenu);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeNasaMenu();
+    }
+  });
+}
 
 // Close modal helpers
 modalClose.addEventListener('click', () => modal.classList.remove('modal-visible'));
@@ -25,12 +86,12 @@ modal.addEventListener('click', (event) => {
 
 // Facts for the "Did You Know?" panel
 const spaceFacts = [
-  'NASA Image and Video Library includes historic Apollo mission media.',
-  'You can search NASA media by mission names, objects, and keywords.',
-  'Each NASA library item has a nasa_id you can use with the /asset endpoint.',
-  'The /metadata endpoint returns a location for detailed metadata files.',
-  'The NASA media library includes image, video, and audio content.',
-  'Many NASA library images can be opened in full resolution from the asset manifest.'
+  'A day on Venus is longer than a year on Venus. NASA Solar System Exploration.',
+  'Jupiter has the shortest day of all planets in our solar system, about 10 hours. NASA Solar System Exploration.',
+  'The Sun contains more than 99% of the mass in our solar system. NASA Solar System Exploration.',
+  'The Milky Way is a spiral galaxy, and our solar system is located in one of its spiral arms. NASA Science.',
+  'Neutron stars can spin very fast, and some are observed as pulsars. NASA Imagine the Universe.',
+  'NASA and partner missions use space telescopes to study galaxies, stars, planets, and black holes. NASA Science.'
 ];
 
 function showRandomSpaceFact() {
@@ -59,6 +120,32 @@ async function fetchJson(url) {
   }
 
   return data;
+}
+
+function getMediaCacheKey(query, mediaType) {
+  return `${MEDIA_CACHE_PREFIX}${query}::${mediaType || 'all'}`;
+}
+
+function writeMediaCache(query, mediaType, items) {
+  localStorage.setItem(
+    getMediaCacheKey(query, mediaType),
+    JSON.stringify({ savedAt: Date.now(), items })
+  );
+}
+
+function readMediaCache(query, mediaType) {
+  const text = localStorage.getItem(getMediaCacheKey(query, mediaType));
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(text);
+    return parsed && Array.isArray(parsed.items) ? parsed : null;
+  } catch {
+    return null;
+  }
 }
 
 function openImageModal(url, title, date) {
@@ -104,7 +191,7 @@ function renderLibraryItems(items) {
       <p><strong>${title}</strong></p>
       <p>${date} • ${mediaType}</p>
       <p>ID: ${nasaId || 'Not provided'}</p>
-      <a class="eonet-link" href="https://images.nasa.gov/details-${encodeURIComponent(nasaId)}" target="_blank" rel="noreferrer">Open in NASA Library</a>
+      <a class="eonet-link library-link" href="https://images.nasa.gov/details-${encodeURIComponent(nasaId)}" target="_blank" rel="noreferrer">Open in NASA Library</a>
     `;
 
     // For images, clicking the thumbnail tries to open a full image from /asset.
@@ -123,6 +210,14 @@ function renderLibraryItems(items) {
 
     gallery.appendChild(card);
   });
+}
+
+function showLibraryNotice(message) {
+  const notice = document.createElement('p');
+  notice.className = 'neo-loading';
+  notice.style.padding = '12px';
+  notice.textContent = message;
+  gallery.prepend(notice);
 }
 
 async function runMediaSearch() {
@@ -150,13 +245,26 @@ async function runMediaSearch() {
       const retryUrl = `https://images-api.nasa.gov/search?${retryParams.toString()}`;
       const retryData = await fetchJson(retryUrl);
       const retryItems = retryData.collection && retryData.collection.items ? retryData.collection.items : [];
-      renderLibraryItems(retryItems.slice(0, 24));
+      const finalRetryItems = retryItems.slice(0, 24);
+      renderLibraryItems(finalRetryItems);
+      writeMediaCache(q, '', finalRetryItems);
+      showLibraryNotice('No exact media type match found. Showing all media results instead.');
       return;
     }
 
-    renderLibraryItems(items.slice(0, 24));
+    const finalItems = items.slice(0, 24);
+    renderLibraryItems(finalItems);
+    writeMediaCache(q, mediaType, finalItems);
   } catch (error) {
-    gallery.innerHTML = `<p class="neo-error">❌ ${error.message}</p>`;
+    const cached = readMediaCache(q, mediaType) || readMediaCache(q, '');
+
+    if (cached && cached.items.length) {
+      renderLibraryItems(cached.items);
+      showLibraryNotice('Live API request failed. Showing saved media results from an earlier successful search.');
+      return;
+    }
+
+    gallery.innerHTML = `<p class="neo-error">❌ ${error.message} Try a broad query like "mars" or "apollo".</p>`;
   } finally {
     mediaButton.disabled = false;
   }
@@ -174,5 +282,8 @@ mediaQueryInput.addEventListener('keydown', (event) => {
 showRandomSpaceFact();
 document.getElementById('new-fact-btn').addEventListener('click', showRandomSpaceFact);
 
-// Give users an immediate working query so the first search succeeds.
-mediaQueryInput.value = DEFAULT_MEDIA_QUERY;
+// On refresh, start with a clean search form so old browser-restored values do not reappear.
+window.addEventListener('pageshow', () => {
+  mediaQueryInput.value = '';
+  mediaTypeSelect.value = '';
+});
