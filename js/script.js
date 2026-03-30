@@ -101,12 +101,14 @@ if (menuToggleButton && nasaMenu) {
 }
 
 // Close modal helpers
-modalClose.addEventListener('click', () => modal.classList.remove('modal-visible'));
-modal.addEventListener('click', (event) => {
-  if (event.target === modal) {
-    modal.classList.remove('modal-visible');
-  }
-});
+if (modalClose && modal) {
+  modalClose.addEventListener('click', () => modal.classList.remove('modal-visible'));
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.classList.remove('modal-visible');
+    }
+  });
+}
 
 // Facts for the "Did You Know?" panel
 const spaceFacts = [
@@ -455,6 +457,11 @@ if (apodRegenerateButton) {
 
 // On refresh, start with a clean search form so old browser-restored values do not reappear.
 window.addEventListener('pageshow', () => {
-  mediaQueryInput.value = '';
-  mediaTypeSelect.value = '';
+  if (mediaQueryInput) {
+    mediaQueryInput.value = '';
+  }
+
+  if (mediaTypeSelect) {
+    mediaTypeSelect.value = '';
+  }
 });
