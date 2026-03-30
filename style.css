@@ -6,6 +6,413 @@
 }
 
 /* Base page styles */
+/* Font stack matches NASA's web properties (Helvetica/Arial) */
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding: 20px;
+  color: #1b1b1b;
+}
+
+/* Centered container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header — NASA primary blue background, white text */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0b3d91;
+  padding: 24px 20px;
+  margin-bottom: 30px;
+  border-radius: 4px;
+}
+
+h1 {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 28px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* Logo */
+.logo {
+  width: 140px;
+  margin-right: 15px;
+}
+
+/* Date‐picker & button row */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+/* Inputs and buttons */
+input[type="date"],
+button {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-weight: normal;
+  color: #1b1b1b;
+  padding: 10px 15px;
+  border: 1px solid #aeb0b5;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.4;
+  width: 100%;
+}
+
+/* Button specific — NASA primary blue */
+button {
+  background-color: #0b3d91;
+  color: #ffffff;
+  border-color: #0b3d91;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:hover {
+  background-color: #082d6e;
+  border-color: #082d6e;
+}
+
+/* Stack horizontally on wider screens */
+@media (min-width: 600px) {
+  .filters {
+    flex-direction: row;
+    padding: 0;
+  }
+  
+  input[type="date"],
+  button {
+    width: auto;
+  }
+}
+
+/* Gallery flex container */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+/* Gallery items */
+.gallery-item {
+  flex: 1 1 100%;  /* full width by default */
+  min-width: 280px;
+  max-width: 500px;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 4px;
+  border-top: 3px solid #0b3d91;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Three columns on wider screens */
+@media (min-width: 1000px) {
+  .gallery-item {
+    flex: 0 1 31%;
+  }
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.gallery-item p {
+  margin-top: 10px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Placeholder content */
+.placeholder {
+  flex: 1 1 100%;
+  text-align: center;
+  padding: 40px;
+  color: #71767a;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+/* Section title — NASA blue text, NASA red underline accent */
+.section-title {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: #0b3d91;
+  margin: 30px 0 15px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #fc3d21;
+}
+
+/* Random fact panel shown above the APOD gallery */
+.space-fact {
+  background: #ffffff;
+  border-left: 5px solid #fc3d21;
+  border-radius: 4px;
+  padding: 14px 16px;
+  margin: 0 0 14px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.space-fact-title {
+  color: #0b3d91;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.space-fact-text {
+  color: #3d4551;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Neo card layout */
+.neo-card {
+  padding: 15px;
+}
+
+/* Hazardous / safe badge */
+.neo-badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.neo-safe {
+  background-color: #e7f2e7;
+  color: #1a6e1a;
+}
+
+.neo-hazardous {
+  background-color: #fde8e8;
+  color: #9b1c1c;
+}
+
+/* Asteroid name */
+.neo-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: #1b1b1b;
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+/* Details list */
+.neo-details p {
+  font-size: 14px;
+  color: #3d4551;
+  margin-bottom: 5px;
+}
+
+.neo-label {
+  font-weight: bold;
+  color: #0b3d91;
+}
+
+/* Count summary line */
+.neo-count {
+  flex: 1 1 100%;
+  font-size: 14px;
+  color: #71767a;
+  padding: 0 5px 10px;
+}
+
+/* Loading and error messages */
+.neo-loading,
+.neo-error {
+  flex: 1 1 100%;
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #71767a;
+}
+
+.neo-error {
+  color: #9b1c1c;
+}
+
+/* Clickable gallery thumbnails */
+.gallery-thumb {
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+.gallery-thumb:hover {
+  opacity: 0.9;
+  transform: scale(1.04);
+}
+
+/* Responsive video embed wrapper inside a gallery card */
+.gallery-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.gallery-video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 2px;
+}
+
+/* Responsive video embed wrapper inside the modal */
+.modal-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  margin-bottom: 15px;
+}
+
+.modal-video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 2px;
+}
+
+/* Lightbox modal backdrop */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 61, 145, 0.88);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Show the modal when this class is added */
+.modal-visible {
+  display: flex;
+}
+
+/* Modal content box */
+.modal-content {
+  position: relative;
+  background: #ffffff;
+  border-radius: 4px;
+  border-top: 4px solid #fc3d21;
+  padding: 24px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+/* Enlarged image inside the modal */
+.modal-img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 2px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+/* Title and date text inside the modal */
+.modal-title {
+  font-weight: bold;
+  font-size: 18px;
+  color: #0b3d91;
+  margin-bottom: 5px;
+}
+
+.modal-date {
+  font-size: 14px;
+  color: #71767a;
+  margin-bottom: 12px;
+}
+
+/* NASA explanation text inside the modal */
+.modal-explanation {
+  font-size: 14px;
+  color: #3d4551;
+  line-height: 1.6;
+  text-align: left;
+  border-top: 1px solid #dfe1e2;
+  padding-top: 12px;
+}
+
+/* Close button — NASA blue */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #0b3d91;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background-color: #082d6e;
+}
+
+/* Single APOD image card — full width */
+.apod-single {
+  flex: 1 1 100%;
+  max-width: 700px;
+}
+
+/* Previous / Next navigation row */
+.apod-nav {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.apod-counter {
+  font-size: 14px;
+  color: #71767a;
+}
+
+.apod-nav button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Base page styles */
 body {
   font-family: Arial, sans-serif;
   background-color: #f1f1f1;
@@ -141,4 +548,200 @@ button:hover {
 .placeholder-icon {
   font-size: 48px;
   margin-bottom: 20px;
+}
+
+/* Section title */
+.section-title {
+  font-family: Verdana, sans-serif;
+  font-size: 20px;
+  color: #212121;
+  margin: 30px 0 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #d3d3d3;
+}
+
+/* Neo card layout */
+.neo-card {
+  padding: 15px;
+}
+
+/* Hazardous / safe badge */
+.neo-badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.neo-safe {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.neo-hazardous {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Asteroid name */
+.neo-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: #212121;
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+/* Details list */
+.neo-details p {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.neo-label {
+  font-weight: bold;
+  color: #212121;
+}
+
+/* Count summary line */
+.neo-count {
+  flex: 1 1 100%;
+  font-size: 14px;
+  color: #666;
+  padding: 0 5px 10px;
+}
+
+/* Loading and error messages */
+.neo-loading,
+.neo-error {
+  flex: 1 1 100%;
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+}
+
+.neo-error {
+  color: #721c24;
+}
+
+/* Clickable gallery thumbnails */
+.gallery-thumb {
+  cursor: pointer;
+}
+
+.gallery-thumb:hover {
+  opacity: 0.85;
+}
+
+/* Lightbox modal backdrop */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Show the modal when this class is added */
+.modal-visible {
+  display: flex;
+}
+
+/* Modal content box */
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+/* Enlarged image inside the modal */
+.modal-img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+/* Title and date text inside the modal */
+.modal-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.modal-date {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* NASA explanation text inside the modal */
+.modal-explanation {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+  text-align: left;
+  border-top: 1px solid #ddd;
+  padding-top: 12px;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #d3d3d3;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background-color: #bfbfbf;
+}
+
+/* Single APOD image card — full width */
+.apod-single {
+  flex: 1 1 100%;
+  max-width: 700px;
+}
+
+/* Previous / Next navigation row */
+.apod-nav {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.apod-counter {
+  font-size: 14px;
+  color: #666;
+}
+
+.apod-nav button:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
