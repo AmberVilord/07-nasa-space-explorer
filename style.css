@@ -362,6 +362,37 @@ button:hover {
   max-width: 850px;
 }
 
+.apod-video-section {
+  margin-top: 8px;
+}
+
+.apod-video-gallery {
+  flex-direction: column;
+  align-items: center;
+}
+
+.apod-card {
+  max-width: 780px;
+}
+
+.apod-card-copy {
+  padding: 10px 4px 2px;
+}
+
+.apod-card-copy p {
+  margin-bottom: 10px;
+}
+
+.apod-explanation {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.apod-video-link {
+  margin-top: 6px;
+  align-self: flex-start;
+}
+
 /* Shared pill button style for the search/load actions and the fact button */
 .action-btn {
   display: inline-flex;
@@ -438,6 +469,34 @@ body.light-mode .action-btn:hover {
   height: 220px;
   object-fit: cover;
   border-radius: 3px;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.gallery-item img:hover {
+  transform: scale(1.06);
+  opacity: 0.93;
+}
+
+.gallery-video-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.gallery-video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-fallback {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: var(--text-soft);
 }
 
 .gallery-item p {
@@ -562,13 +621,12 @@ body.light-mode .library-link {
 
 .gallery-thumb {
   cursor: pointer;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform-origin: center;
+  cursor: pointer;
 }
 
 .gallery-thumb:hover {
-  opacity: 0.9;
-  transform: scale(1.04);
+  opacity: 0.93;
+  transform: scale(1.06);
 }
 
 .modal-overlay {

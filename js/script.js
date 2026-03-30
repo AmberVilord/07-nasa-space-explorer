@@ -6,8 +6,31 @@ const mediaTypeSelect = document.getElementById('mediaType');
 const mediaButton = document.getElementById('media-btn');
 const gallery = document.getElementById('gallery');
 const spaceFactText = document.getElementById('space-fact-text');
+const apodVideoCard = document.getElementById('apod-video-card');
+const apodRegenerateButton = document.getElementById('apod-regenerate-btn');
 const DEFAULT_MEDIA_QUERY = 'mars';
 const MEDIA_CACHE_PREFIX = 'nasa-media-cache:';
+const APOD_PODCAST_URL = 'https://www.youtube.com/@apodpodcast/videos';
+const APOD_PODCAST_VIDEOS = [
+  {
+    title: '2026 March 29 - A Message from Earth',
+    publishedAt: '2026-03-29',
+    url: 'https://www.youtube.com/watch?v=CIfGf2-TuB0',
+    summary: 'Source: APOD Podcast YouTube channel.'
+  },
+  {
+    title: '2026 March 27 - Hickson 44 in Leo',
+    publishedAt: '2026-03-27',
+    url: 'https://www.youtube.com/watch?v=yEN6eu9jHKQ',
+    summary: 'Source: APOD Podcast YouTube channel.'
+  },
+  {
+    title: '2026 March 26 - Black Holes and Neutron Stars: 218 Mergers and Counting',
+    publishedAt: '2026-03-26',
+    url: 'https://www.youtube.com/watch?v=NgaZdXs2q5A',
+    summary: 'Source: APOD Podcast YouTube channel.'
+  }
+];
 
 // Modal elements
 const modal = document.getElementById('modal');
@@ -19,6 +42,7 @@ const themeToggleButton = document.getElementById('theme-toggle');
 const menuToggleButton = document.getElementById('menu-toggle');
 const nasaMenu = document.getElementById('nasa-menu');
 const THEME_STORAGE_KEY = 'space-explorer-theme';
+let currentApodVideoIndex = -1;
 
 // Apply a visual theme and update the toggle label so users always know the next mode.
 function applyTheme(theme) {
@@ -162,6 +186,117 @@ function getPreviewImage(item) {
   return imageLink ? imageLink.href : '';
 }
 
+function getMediaLink(item, renderType) {
+  const links = item.links || [];
+  const match = links.find(link => link.render === renderType);
+  return match ? match.href : '';
+}
+
+// Convert common YouTube URL formats into an embeddable URL.
+function getYouTubeEmbedUrl(url) {
+  if (!url) {
+    return '';
+  }
+
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.toLowerCase();
+
+    if (host.includes('youtu.be')) {
+      const id = parsed.pathname.replace('/', '');
+      return id ? `https://www.youtube.com/embed/${id}` : '';
+    }
+
+    if (host.includes('youtube.com')) {
+      if (parsed.pathname.startsWith('/embed/')) {
+        return parsed.href;
+      }
+
+      if (parsed.pathname === '/watch') {
+        const id = parsed.searchParams.get('v');
+        return id ? `https://www.youtube.com/embed/${id}` : '';
+      }
+    }
+  } catch {
+    return '';
+  }
+
+  return '';
+}
+
+function getYouTubeVideoId(url) {
+  const embedUrl = getYouTubeEmbedUrl(url);
+
+  if (!embedUrl) {
+    return '';
+  }
+
+  try {
+    const parsed = new URL(embedUrl);
+    return parsed.pathname.replace('/embed/', '');
+  } catch {
+    return '';
+  }
+}
+
+function renderApodVideoEntry(entry) {
+  const videoId = getYouTubeVideoId(entry.url);
+  const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+  const mediaMarkup = thumbnailUrl
+    ? `
+      <a href="${entry.url}" target="_blank" rel="noreferrer" aria-label="Watch ${entry.title} on YouTube">
+        <img src="${thumbnailUrl}" alt="${entry.title}" class="gallery-thumb" />
+      </a>
+    `
+    : '';
+
+  return `
+    <article class="gallery-item apod-card">
+      ${mediaMarkup}
+      <div class="apod-card-copy">
+        <p><strong>${entry.title}</strong></p>
+        <p>${entry.publishedAt} • YouTube video</p>
+        <p class="apod-explanation">${entry.summary}</p>
+        <a class="eonet-link library-link apod-video-link" href="${entry.url}" target="_blank" rel="noreferrer">Watch on YouTube</a>
+      </div>
+    </article>
+  `;
+}
+
+function getNextApodVideo() {
+  if (!APOD_PODCAST_VIDEOS.length) {
+    return null;
+  }
+
+  if (APOD_PODCAST_VIDEOS.length === 1) {
+    currentApodVideoIndex = 0;
+    return APOD_PODCAST_VIDEOS[0];
+  }
+
+  let nextIndex = Math.floor(Math.random() * APOD_PODCAST_VIDEOS.length);
+
+  while (nextIndex === currentApodVideoIndex) {
+    nextIndex = Math.floor(Math.random() * APOD_PODCAST_VIDEOS.length);
+  }
+
+  currentApodVideoIndex = nextIndex;
+  return APOD_PODCAST_VIDEOS[nextIndex];
+}
+
+function loadApodVideo() {
+  if (!apodVideoCard) {
+    return;
+  }
+  const videoEntry = getNextApodVideo();
+
+  if (!videoEntry) {
+    apodVideoCard.innerHTML = '<p class="neo-error">No APOD Podcast videos are available right now.</p>';
+    return;
+  }
+
+  apodVideoCard.innerHTML = renderApodVideoEntry(videoEntry);
+}
+
 async function getAssetLinks(nasaId) {
   const assetUrl = `https://images-api.nasa.gov/asset/${encodeURIComponent(nasaId)}`;
   const data = await fetchJson(assetUrl);
@@ -183,11 +318,42 @@ function renderLibraryItems(items) {
     const mediaType = meta.media_type || 'unknown';
     const nasaId = meta.nasa_id || '';
     const thumb = getPreviewImage(item);
+    const videoUrl = getMediaLink(item, 'video');
+    const youtubeEmbedUrl = getYouTubeEmbedUrl(videoUrl);
 
     const card = document.createElement('div');
     card.className = 'gallery-item';
+
+    // Handle videos clearly: embed YouTube when available, otherwise provide a direct link.
+    let mediaMarkup = '';
+    if (mediaType === 'video') {
+      if (youtubeEmbedUrl) {
+        mediaMarkup = `
+          <div class="gallery-video-wrap">
+            <iframe
+              class="gallery-video"
+              src="${youtubeEmbedUrl}"
+              title="${title}"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        `;
+      } else if (videoUrl) {
+        mediaMarkup = `
+          <p class="video-fallback">Video preview is not embeddable here.</p>
+          <a class="eonet-link library-link" href="${videoUrl}" target="_blank" rel="noreferrer">Open Video</a>
+        `;
+      } else if (thumb) {
+        mediaMarkup = `<img src="${thumb}" alt="${title}" class="gallery-thumb" />`;
+      }
+    } else if (thumb) {
+      mediaMarkup = `<img src="${thumb}" alt="${title}" class="gallery-thumb" />`;
+    }
+
     card.innerHTML = `
-      ${thumb ? `<img src="${thumb}" alt="${title}" class="gallery-thumb" />` : ''}
+      ${mediaMarkup}
       <p><strong>${title}</strong></p>
       <p>${date} • ${mediaType}</p>
       <p>ID: ${nasaId || 'Not provided'}</p>
@@ -281,6 +447,11 @@ mediaQueryInput.addEventListener('keydown', (event) => {
 
 showRandomSpaceFact();
 document.getElementById('new-fact-btn').addEventListener('click', showRandomSpaceFact);
+loadApodVideo();
+
+if (apodRegenerateButton) {
+  apodRegenerateButton.addEventListener('click', loadApodVideo);
+}
 
 // On refresh, start with a clean search form so old browser-restored values do not reappear.
 window.addEventListener('pageshow', () => {
